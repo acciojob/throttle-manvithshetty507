@@ -7,7 +7,7 @@ function throttle(callback, delay) {
 
 	function withThrottle(...args) {
 		if(!timeoutId) {
-			callback.call(this,args)
+			callback.apply(this,args)
 			lastArgs = null
 			lastThis = null
 			shouldRun = false
