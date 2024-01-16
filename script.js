@@ -1,28 +1,42 @@
 //your JS code here. If required.
 function throttle(callback, delay) {
-	let waitingargs;
-	let shouldWait;
 	let timeoutId;
+    let lastArgs;
+    let lastThis;
+    let shouldRun;
 
-	function throttler(...args) {
-		if(shouldWait) {
+	function withThrottle(...args) {
+		if(!timeoutId) {
 			callback.call(this,args)
-			shouldWait = false
-			
+			lastArgs = null
+			lastThis = null
+			shouldRun = false
+
 			timeoutId = setTimeout(() => {
-                shouldWait = true
-                if (waitingArgs) {
-                    // If there are waiting arguments, execute the callback with them
-                    throttler.apply(this, waitingArgs)
-                    waitingArgs = null
+				timeoutId = null;
+				if (shouldRun) {
+                    throttled.apply(lastThis, lastArgs);
+                    lastArgs = null;
+                    lastThis = null;
+                    shouldRun = false;
                 }
-            }, delay);
-		} else {
-            // If shouldWait is false, save the arguments for later execution
-            waitingArgs = args
+			},delay)
+			
+		}else {
+            lastArgs = args;
+            lastThis = this;
+            shouldRun = true;
         }
+
+		withThrottle.cancel = function () {
+	        clearTimeout(timeoutId);
+	        timeoutId = null;
+	        lastArgs = null;
+	        lastThis = null;
+	        shouldRun = false;
+	    }
 	}
-	return throttler
+	return withThrottle
 }
 
 module.exports = throttle;
