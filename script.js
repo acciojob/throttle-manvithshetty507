@@ -15,7 +15,7 @@ function throttle(callback, delay) {
 			timeoutId = setTimeout(() => {
 				timeoutId = null;
 				if (shouldRun) {
-                    throttled.apply(lastThis, lastArgs);
+                    withThrottle.apply(lastThis, lastArgs);
                     lastArgs = null;
                     lastThis = null;
                     shouldRun = false;
